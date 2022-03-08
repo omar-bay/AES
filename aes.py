@@ -41,7 +41,7 @@ def xor(one, two):
             # get xor binary
             bin_sol = ""
             for k in range(len(bin_one)):
-                if bin_one == bin_two:
+                if bin_one[k] == bin_two[k]:
                     bin_sol+="0"
                 else:
                     bin_sol+="1"
@@ -57,5 +57,6 @@ def xor(one, two):
 
 # be_z = xor([["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]])
 # print(be_z)
-test = [["20", "46", "75", "67"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]]
-print(substitute(test))
+w3 = [['B7', '5A', '9D', '85']]
+w0 = [['54', '69', '61', '74']]
+print(xor(w3, w0))
