@@ -20,6 +20,16 @@ s_box = [
     ["8C","A1","89","0D","BF","E6","42","68","41","99","2D","0F","B0","54","BB","16"]
 ]
 
+def substitute(state):
+    solution = state.copy()
+    for i in range(len(state)):
+        for j in range(len(state[0])):
+            row = int(state[i][j][0], 16)
+            col = int(state[i][j][1], 16)
+            solution[i][j] = s_box[row][col]
+
+    return solution
+
 def xor(one, two):
     solution = one.copy()
     for i in range(len(one)):
@@ -44,5 +54,8 @@ def xor(one, two):
     return solution
 
 
-be_z = xor([["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]])
-print(be_z)
+
+# be_z = xor([["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]])
+# print(be_z)
+test = [["20", "46", "75", "67"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]]
+print(substitute(test))
