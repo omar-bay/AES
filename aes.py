@@ -20,6 +20,23 @@ s_box = [
     ["8C","A1","89","0D","BF","E6","42","68","41","99","2D","0F","B0","54","BB","16"]
 ]
 
+round_constant = [
+    ["01","00","00","00"],
+    ["02","00","00","00"],
+    ["04","00","00","00"],
+    ["08","00","00","00"],
+    ["10","00","00","00"],
+    ["20","00","00","00"],
+    ["40","00","00","00"],
+    ["80","00","00","00"],
+    ["1B","00","00","00"],
+    ["36","00","00","00"]
+]
+
+def add_round_constant(word, round_no):
+    """ ['B7', '5A', '9D', '85'] """
+    return xor([round_constant[round_no]], [word])
+
 def circular_left_shift(word, rounds):
     """ ['B7', '5A', '9D', '85'] """
     solution = word.copy()
@@ -35,6 +52,7 @@ def circular_left_shift(word, rounds):
     return solution
 
 def substitute(state):
+    """ [['B7', '5A', '9D', '85']] """
     solution = state.copy()
     for i in range(len(state)):
         for j in range(len(state[0])):
@@ -74,4 +92,6 @@ def xor(one, two):
 # print(be_z)
 w3 = [['B7', '5A', '9D', '85']]
 w0 = [['54', '69', '61', '74']]
-print(circular_left_shift(w3[0], 3))
+# print(circular_left_shift(w3[0], 3))
+# print(substitute(w3))
+print(add_round_constant(w3[0], 0))
