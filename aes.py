@@ -20,6 +20,20 @@ s_box = [
     ["8C","A1","89","0D","BF","E6","42","68","41","99","2D","0F","B0","54","BB","16"]
 ]
 
+def circular_left_shift(word, rounds):
+    """ ['B7', '5A', '9D', '85'] """
+    solution = word.copy()
+    for r in range(rounds):
+        print('in for')
+        pin = 0
+        temp = solution[pin]
+        while(pin<len(solution)-1):
+            solution[pin] = solution[pin+1]
+            pin+= 1
+        solution[pin] = temp
+    
+    return solution
+
 def substitute(state):
     solution = state.copy()
     for i in range(len(state)):
@@ -31,6 +45,7 @@ def substitute(state):
     return solution
 
 def xor(one, two):
+    """ [['B7', '5A', '9D', '85']] """
     solution = one.copy()
     for i in range(len(one)):
         for j in range(len(one[0])):
@@ -59,4 +74,4 @@ def xor(one, two):
 # print(be_z)
 w3 = [['B7', '5A', '9D', '85']]
 w0 = [['54', '69', '61', '74']]
-print(xor(w3, w0))
+print(circular_left_shift(w3[0], 3))
