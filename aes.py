@@ -34,12 +34,35 @@ round_constant = [
     ["36","00","00","00"]
 ]
 
+
+def key_edge(key, round_no):
+    """ returns w4 w1 w2 w3 """
+    """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
+    """ returns ["07", "00", "A3", "C3"] """
+    w_last = key[-1]
+
+    # circular byte left shift of w[last]
+    w_last = circular_byte_shift(w_last, 1)
+
+    # byte substitution on w[last]
+    w_last = substitute([w_last])[0]
+
+    # adding round constant on w[last]
+    w_last = add_round_constant(w_last, round_no)
+
+    # upper xor operation
+    w_start = xor([w_last], [key[0]])
+
+    return w_start
+
+
 def matrix_multiply(one, two):
     """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
     for i in range(len(one)):
         for j in range(len(one[0])):
             # watch out for row col format
             pass
+
 
 def mix_multiply(one, factor):
     """ "A1", "02" """
@@ -72,6 +95,7 @@ def mix_multiply(one, factor):
     else:
         return ""
 
+
 def binary_xor(one, two):
     """ 00000000 """
     solution = ""
@@ -83,11 +107,13 @@ def binary_xor(one, two):
 
     return solution
 
+
 def add_round_constant(word, round_no):
     """ ['B7', '5A', '9D', '85'] """
     return xor([round_constant[round_no]], [word])
 
-def circular_left_shift(word, rounds):
+
+def circular_byte_shift(word, rounds):
     """ ['B7', '5A', '9D', '85'] """
     solution = word.copy()
     for r in range(rounds):
@@ -101,6 +127,7 @@ def circular_left_shift(word, rounds):
     
     return solution
 
+
 def substitute(state):
     """ [['B7', '5A', '9D', '85']] """
     solution = state.copy()
@@ -111,6 +138,7 @@ def substitute(state):
             solution[i][j] = s_box[row][col]
 
     return solution
+
 
 def xor(one, two):
     """ [['B7', '5A', '9D', '85']] """
@@ -138,11 +166,11 @@ def xor(one, two):
 
 
 
+
 # be_z = xor([["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]])
 # print(be_z)
 w3 = [['B7', '5A', '9D', '85']]
 w0 = [['54', '69', '61', '74']]
-# print(circular_left_shift(w3[0], 3))
 # print(substitute(w3))
 # print(add_round_constant(w3[0], 0))
 print(binary_xor("1010", "1011"))
