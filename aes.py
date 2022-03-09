@@ -36,18 +36,66 @@ round_constant = [
     ["36","00","00","00"]
 ]
 
+mix_constant = [
+    ["02","03","01","01"],
+    ["01","02","03","01"],
+    ["01","01","02","03"],
+    ["03","01","01","02"]
+]
 
-def text():
-    pass
+
+def encrypt(text, key):
+    # get keys
+    keys = all_10_keys(key)
+
+    current_text = deepcopy(text)
+    for i in range(10):
+        current_text = text_operation(current_text, keys[i], i)
+        print(current_text)
+
+
+def text_operation(text, key, round):
+    state_text = make_state(text)
+    state_key = make_state(key)
+
+    keys = all_10_keys(key)
+    
+    # xor together
+    new_state = xor(state_text, state_key)
+
+    # s-box
+    new_state = substitute(new_state)
+
+    # round
+    new_state = [
+        circular_byte_shift(new_state[0], 0),
+        circular_byte_shift(new_state[1], 1),
+        circular_byte_shift(new_state[2], 2),
+        circular_byte_shift(new_state[3], 3),
+    ]
+
+    # mix
+    new_state = mix(new_state, factor=mix_constant)
+
+    # xor with round_key
+    rot_key = make_state(keys[1])
+    new_state = xor(new_state, rot_key)
+
+    return new_state
 
 
 def all_10_keys(key):
     """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
+    keys = []
     current_key = deepcopy(key)
-    print(f"Key 0: {current_key}")
+    keys.append(current_key)
+    # print(f"Key 0: {current_key}")
     for k in range(10):
         current_key = next_key(current_key, k)
-        print(f"Key {k+1}: {current_key}")
+        keys.append(current_key)
+        # print(f"Key {k+1}: {current_key}")
+
+    return keys
 
 
 def next_key(key, round_no):
@@ -87,14 +135,6 @@ def key_edge(key, round_no):
     return w_start
 
 
-def matrix_multiply(one, two):
-    """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
-    for i in range(len(one)):
-        for j in range(len(one[0])):
-            # watch out for row col format
-            pass
-
-
 def make_state(one):
     """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
     state = deepcopy(one)
@@ -103,6 +143,35 @@ def make_state(one):
             state[i][j] = one[j][i]
 
     return state
+
+
+def mix(one, factor):
+    """ [["07","00","A3","C3"],["C9","90","87","D6"],["9E","13","22","83"],["43","CD","78","C0"]] """
+    """ [["01","02","03","02"],["01","02","02","02"],["01","01","02","02"],["01","03","02","01"]] """
+    solution = [["00","00","00","00"],["00","00","00","00"],["00","00","00","00"],["00","00","00","00"]]
+
+    # rotate one to row-the-col
+    state = make_state(one)
+
+    # word by word
+    for i in range(len(state)):
+        for j in range(len(state[0])):
+            solution[i][j] = word_multiply(state[j], factor=factor[i])
+
+    return solution
+
+
+def word_multiply(one, factor):
+    """ ['B7','5A','9D','85'] """
+    """ ["02","03","01","01"] """
+    """ returns "00" """
+    sol = "00"
+
+    for i in range(len(one)):
+        temp = mix_multiply(one[i], factor=factor[i])
+        sol = xor([[ sol ]], [[ temp ]])[0][0]
+
+    return sol
 
 
 def mix_multiply(one, factor):
@@ -120,7 +189,6 @@ def mix_multiply(one, factor):
             solution = binary_xor(solution, "00011011")
 
         return str("{0:02x}".format(int(solution, 2)))
-
 
     elif(factor == "03"):
         # x02
@@ -213,10 +281,12 @@ def xor(one, two):
 # ]
 # all_10_keys(key)
 
-# x = [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]]
-# print(make_state(x))
+# one = [["63","EB","9F","A0"],["2F","93","92","C0"],["AF","C7","AB","30"],["A2","20","CB","2B"]]
+# two = [["02","03","01","01"],["01","02","03","01"],["01","01","02","03"],["03","01","01","02"]]
+# print(mix(one, factor=two))
 
-one = xor([[mix_multiply("87", "02")]], [[mix_multiply("6E", "03")]])
-two = xor([[mix_multiply("46", "01")]], one)
-three = xor([[mix_multiply("A6", "01")]], two)
-print(three)
+
+key = [["54","68","61","74"],["73","20","6D","79"],["20","4B","75","6E"],["67","20","46","75"]]
+text = [["54","77","6F","20"],["4F","6E","65","20"],["4E","69","6E","65"],["20","54","77","6F"]]
+
+print(text_operation(text, key))
