@@ -1,3 +1,4 @@
+""" function desc is input format and expected output format """
 """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
 """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
 
@@ -32,6 +33,55 @@ round_constant = [
     ["1B","00","00","00"],
     ["36","00","00","00"]
 ]
+
+def matrix_multiply(one, two):
+    """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
+    for i in range(len(one)):
+        for j in range(len(one[0])):
+            # watch out for row col format
+            pass
+
+def mix_multiply(one, factor):
+    """ "A1", "02" """
+    # hex to binary
+    bin_one = str("{0:08b}".format(int(one, 16)))
+    if(factor == "01"):
+        return one
+
+    elif(factor == "02"):
+        drop = one[0]
+        solution = f"{one[1:-1]}0"
+        if(drop == "1"):
+            # xor 1B
+            solution = binary_xor(solution, "00011011")
+            return solution
+        else:
+            return solution
+
+    elif(factor == "03"):
+        # x02
+        drop = one[0]
+        solution = f"{one[1:-1]}0"
+        if(drop == "1"):
+            # xor 1B
+            solution = binary_xor(solution, "00011011")
+        # +one
+        solution = binary_xor(one, solution)
+        return solution
+    
+    else:
+        return ""
+
+def binary_xor(one, two):
+    """ 00000000 """
+    solution = ""
+    for i in range(len(one)):
+        if one[i] == two[i]:
+            solution+= "0"
+        else:
+            solution+= "1"
+
+    return solution
 
 def add_round_constant(word, round_no):
     """ ['B7', '5A', '9D', '85'] """
@@ -94,4 +144,5 @@ w3 = [['B7', '5A', '9D', '85']]
 w0 = [['54', '69', '61', '74']]
 # print(circular_left_shift(w3[0], 3))
 # print(substitute(w3))
-print(add_round_constant(w3[0], 0))
+# print(add_round_constant(w3[0], 0))
+print(binary_xor("1010", "1011"))
