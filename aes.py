@@ -37,6 +37,15 @@ round_constant = [
 ]
 
 
+def all_10_keys(key):
+    """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
+    current_key = deepcopy(key)
+    print(f"Key 0: {current_key}")
+    for k in range(10):
+        current_key = next_key(current_key, k)
+        print(f"Key {k+1}: {current_key}")
+
+
 def next_key(key, round_no):
     """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
     new_key = deepcopy(key)
@@ -182,13 +191,10 @@ def xor(one, two):
 
 
 
-
 key = [
-    ["54","68","61","74"],
-    ["73","20","6D","79"],
-    ["20","4B","75","6E"],
-    ["67","20","46","75"],
+    ["2B","7E","15","16"],
+    ["28","AE","D2","A6"],
+    ["AB","F7","15","88"],
+    ["09","CF","4F","3C"],
 ]
-first_key = next_key(key, 0)
-print(first_key)
-
+all_10_keys(key)
