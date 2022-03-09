@@ -50,15 +50,13 @@ def encrypt(text, key):
 
     current_text = deepcopy(text)
     for i in range(10):
-        current_text = text_operation(current_text, keys[i], i)
+        current_text = text_operation(current_text, keys, i)
         print(current_text)
 
 
-def text_operation(text, key, round):
+def text_operation(text, keys, round):
     state_text = make_state(text)
-    state_key = make_state(key)
-
-    keys = all_10_keys(key)
+    state_key = make_state(keys[round])
     
     # xor together
     new_state = xor(state_text, state_key)
@@ -78,7 +76,7 @@ def text_operation(text, key, round):
     new_state = mix(new_state, factor=mix_constant)
 
     # xor with round_key
-    rot_key = make_state(keys[1])
+    rot_key = make_state(keys[round+1])
     new_state = xor(new_state, rot_key)
 
     return new_state
@@ -286,7 +284,13 @@ def xor(one, two):
 # print(mix(one, factor=two))
 
 
-key = [["54","68","61","74"],["73","20","6D","79"],["20","4B","75","6E"],["67","20","46","75"]]
-text = [["54","77","6F","20"],["4F","6E","65","20"],["4E","69","6E","65"],["20","54","77","6F"]]
+# key = [["54","68","61","74"],["73","20","6D","79"],["20","4B","75","6E"],["67","20","46","75"]]
+# text = [["54","77","6F","20"],["4F","6E","65","20"],["4E","69","6E","65"],["20","54","77","6F"]]
 
-print(text_operation(text, key))
+# encrypt(text, key)
+
+
+key = [["2B","7E","15","16"],["28","AE","D2","A6"],["AB","F7","15","88"],["09","CF","4F","3C"]]
+text = [["32","43","F6","A8"],["88","5A","30","8D"],["31","31","98","A2"],["E0","37","07","34"]]
+
+encrypt(text, key)
