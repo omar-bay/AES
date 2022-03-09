@@ -1,3 +1,5 @@
+from copy import copy, deepcopy
+
 """ function desc is input format and expected output format """
 """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
 """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
@@ -37,7 +39,7 @@ round_constant = [
 
 def next_key(key, round_no):
     """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
-    new_key = key.copy()
+    new_key = deepcopy(key)
 
     # w0
     new_key[0] = key_edge(key, round_no)
@@ -145,11 +147,13 @@ def circular_byte_shift(word, rounds):
 
 def substitute(state):
     """ [['B7', '5A', '9D', '85']] """
-    solution = state.copy()
+    solution = deepcopy(state)
     for i in range(len(state)):
         for j in range(len(state[0])):
-            row = int(state[i][j][0], 16)
-            col = int(state[i][j][1], 16)
+            d1 = state[i][j][0]
+            d2 = state[i][j][1]
+            row = int(d1, 16)
+            col = int(d2, 16)
             solution[i][j] = s_box[row][col]
 
     return solution
@@ -157,20 +161,17 @@ def substitute(state):
 
 def xor(one, two):
     """ [['B7', '5A', '9D', '85']] """
-    solution = one.copy()
+    solution = deepcopy(one)
     for i in range(len(one)):
         for j in range(len(one[0])):
             # binary strings
-            bin_one = str("{0:08b}".format(int(one[i][j], 16)))
-            bin_two = str("{0:08b}".format(int(two[i][j], 16)))
+            d1 = one[i][j]
+            d2 = two[i][j]
+            bin_one = str("{0:08b}".format(int(d1, 16)))
+            bin_two = str("{0:08b}".format(int(d2, 16)))
 
             # get xor binary
-            bin_sol = ""
-            for k in range(len(bin_one)):
-                if bin_one[k] == bin_two[k]:
-                    bin_sol+="0"
-                else:
-                    bin_sol+="1"
+            bin_sol = binary_xor(bin_one, bin_two)
 
             # convert sol bin>hex
             hex_sol = str("{0:02x}".format(int(bin_sol, 2)))
@@ -190,3 +191,4 @@ key = [
 ]
 first_key = next_key(key, 0)
 print(first_key)
+
