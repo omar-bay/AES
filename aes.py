@@ -37,6 +37,10 @@ round_constant = [
 ]
 
 
+def text():
+    pass
+
+
 def all_10_keys(key):
     """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
     current_key = deepcopy(key)
@@ -91,6 +95,16 @@ def matrix_multiply(one, two):
             pass
 
 
+def make_state(one):
+    """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
+    state = deepcopy(one)
+    for i in range(len(one)):
+        for j in range(len(one[0])):
+            state[i][j] = one[j][i]
+
+    return state
+
+
 def mix_multiply(one, factor):
     """ "A1", "02" """
     # hex to binary
@@ -99,25 +113,25 @@ def mix_multiply(one, factor):
         return one
 
     elif(factor == "02"):
-        drop = one[0]
-        solution = f"{one[1:-1]}0"
+        drop = bin_one[0]
+        solution = f"{bin_one[1:len(bin_one)]}0"
         if(drop == "1"):
             # xor 1B
             solution = binary_xor(solution, "00011011")
-            return solution
-        else:
-            return solution
+
+        return str("{0:02x}".format(int(solution, 2)))
+
 
     elif(factor == "03"):
         # x02
-        drop = one[0]
-        solution = f"{one[1:-1]}0"
+        drop = bin_one[0]
+        solution = f"{bin_one[1:len(bin_one)]}0"
         if(drop == "1"):
             # xor 1B
             solution = binary_xor(solution, "00011011")
-        # +one
-        solution = binary_xor(one, solution)
-        return solution
+        # +bin_one
+        solution = binary_xor(bin_one, solution)
+        return str("{0:02x}".format(int(solution, 2)))
     
     else:
         return ""
@@ -191,10 +205,18 @@ def xor(one, two):
 
 
 
-key = [
-    ["2B","7E","15","16"],
-    ["28","AE","D2","A6"],
-    ["AB","F7","15","88"],
-    ["09","CF","4F","3C"],
-]
-all_10_keys(key)
+# key = [
+#     ["2B","7E","15","16"],
+#     ["28","AE","D2","A6"],
+#     ["AB","F7","15","88"],
+#     ["09","CF","4F","3C"],
+# ]
+# all_10_keys(key)
+
+# x = [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]]
+# print(make_state(x))
+
+one = xor([[mix_multiply("87", "02")]], [[mix_multiply("6E", "03")]])
+two = xor([[mix_multiply("46", "01")]], one)
+three = xor([[mix_multiply("A6", "01")]], two)
+print(three)
