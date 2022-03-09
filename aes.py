@@ -35,6 +35,22 @@ round_constant = [
 ]
 
 
+def next_key(key, round_no):
+    """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
+    new_key = key.copy()
+
+    # w0
+    new_key[0] = key_edge(key, round_no)
+    # w1
+    new_key[1] = xor([ new_key[0] ], [ key[1] ])[0]
+    # w2
+    new_key[2] = xor([ new_key[1] ], [ key[2] ])[0]
+    # w3
+    new_key[3] = xor([ new_key[2] ], [ key[3] ])[0]
+
+    return new_key
+
+
 def key_edge(key, round_no):
     """ returns w4 w1 w2 w3 """
     """ [["07", "00", "A3", "C3"],["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
@@ -51,7 +67,7 @@ def key_edge(key, round_no):
     w_last = add_round_constant(w_last, round_no)
 
     # upper xor operation
-    w_start = xor([w_last], [key[0]])
+    w_start = xor([ w_last ], [ key[0] ])[0]
 
     return w_start
 
@@ -110,14 +126,13 @@ def binary_xor(one, two):
 
 def add_round_constant(word, round_no):
     """ ['B7', '5A', '9D', '85'] """
-    return xor([round_constant[round_no]], [word])
+    return xor([round_constant[round_no]], [word])[0]
 
 
 def circular_byte_shift(word, rounds):
     """ ['B7', '5A', '9D', '85'] """
     solution = word.copy()
     for r in range(rounds):
-        print('in for')
         pin = 0
         temp = solution[pin]
         while(pin<len(solution)-1):
@@ -167,10 +182,11 @@ def xor(one, two):
 
 
 
-# be_z = xor([["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]], [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]])
-# print(be_z)
-w3 = [['B7', '5A', '9D', '85']]
-w0 = [['54', '69', '61', '74']]
-# print(substitute(w3))
-# print(add_round_constant(w3[0], 0))
-print(binary_xor("1010", "1011"))
+key = [
+    ["54","68","61","74"],
+    ["73","20","6D","79"],
+    ["20","4B","75","6E"],
+    ["67","20","46","75"],
+]
+first_key = next_key(key, 0)
+print(first_key)
