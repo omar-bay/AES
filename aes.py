@@ -49,6 +49,10 @@ def encrypt(text, key):
     keys = all_10_keys(key)
 
     current_text = deepcopy(text)
+
+    # add round key
+    current_text = xor(current_text, keys[0])
+
     for i in range(10):
         current_text = text_operation(current_text, keys, i)
         print(current_text)
@@ -57,12 +61,9 @@ def encrypt(text, key):
 def text_operation(text, keys, round):
     state_text = make_state(text)
     state_key = make_state(keys[round])
-    
-    # xor together
-    new_state = xor(state_text, state_key)
 
     # s-box
-    new_state = substitute(new_state)
+    new_state = substitute(state_text)
 
     # round
     new_state = [
@@ -73,7 +74,8 @@ def text_operation(text, keys, round):
     ]
 
     # mix
-    new_state = mix(new_state, factor=mix_constant)
+    if round != 9:
+        new_state = mix(new_state, factor=mix_constant)
 
     # xor with round_key
     rot_key = make_state(keys[round+1])
