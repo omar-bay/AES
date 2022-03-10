@@ -1,4 +1,5 @@
 from copy import copy, deepcopy
+from unittest import makeSuite
 
 """ function desc is input format and expected output format """
 """ [["07", "00", "A3", "C3"], ["C9", "90", "87", "D6"],["9E", "13", "22", "83"],["43", "CD", "78", "C0"]] """
@@ -52,15 +53,16 @@ def encrypt(text, key):
 
     # add round key
     current_text = xor(current_text, keys[0])
+    current_text = make_state(current_text)
 
     for i in range(10):
         current_text = text_operation(current_text, keys, i)
-        print(current_text)
+        print(f"Round {i+1}\n{current_text}")
 
 
 def text_operation(text, keys, round):
-    state_text = make_state(text)
-    state_key = make_state(keys[round])
+    # state_text = make_state(text)
+    state_text = deepcopy(text)
 
     # s-box
     new_state = substitute(state_text)
